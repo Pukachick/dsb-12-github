@@ -1,0 +1,37 @@
+-- ฐานข้อมูลที่ใช้มาจาก chinook.db และใช้ gemini ในการสร้างโจทย์ขึ้นมา
+
+
+
+-- 1. หาว่าในฐานข้อมูลนี้ ศิลปิน (Artist) แต่ละคนมี จำนวนอัลบั้ม (Number of Albums) ทั้งหมดกี่อัลบั้ม?
+select 
+  artists.Name artname,
+  count(albums.AlbumId) calb
+from artists 
+join albums
+  on artists.ArtistId = albums.ArtistId
+group by artname
+order by calb desc
+
+-- 2จงหา ประเทศ (BillingCountry) ที่มีมูลค่าการขาย (Total Sales) รวม เกิน 100.00
+select invoices.BillingCountry,
+  sum(invoices.Total) Total_Sales 
+from invoices
+group by invoices.BillingCountry
+having sum(invoices.Total) > 100.00
+order by sum(invoices.Total) desc
+
+
+-- 3 แสดงรายชื่อลูกค้าที่มียอดซื้อรวม (Total Spending) สูงกว่าค่าเฉลี่ย ของลูกค้าทั้งหมด
+WITH CustomerSpending AS (
+    SELECT CustomerId, SUM(Total) as TotalSpend
+    FROM invoices
+    GROUP BY CustomerId
+)
+SELECT 
+    c.FirstName, 
+    c.LastName, 
+    cs.TotalSpend
+FROM customers c
+JOIN CustomerSpending cs ON c.CustomerId = cs.CustomerId
+WHERE cs.TotalSpend > (SELECT AVG(TotalSpend) FROM CustomerSpending) -- ขั้นที่ 2: เทียบกับค่าเฉลี่ยยอดรวม
+ORDER BY cs.TotalSpend DESC;
