@@ -35,3 +35,38 @@ FROM customers c
 JOIN CustomerSpending cs ON c.CustomerId = cs.CustomerId
 WHERE cs.TotalSpend > (SELECT AVG(TotalSpend) FROM CustomerSpending) -- ขั้นที่ 2: เทียบกับค่าเฉลี่ยยอดรวม
 ORDER BY cs.TotalSpend DESC;
+
+
+--โจทย์4: จงหาชื่อศิลปิน 5 อันดับแรกที่ทำรายได้ (Total Sales) ให้กับร้านมากที่สุด โดยคำนวณจากยอดขายรวมในตาราง invoice_items
+
+select art.Name, sum(ii.Quantity*ii.UnitPrice) as totalSales
+from artists art
+join albums alb on alb.ArtistId = art.ArtistId
+join tracks tr on tr.AlbumId = alb.AlbumId
+join invoice_items ii on ii.TrackId = tr.TrackId
+group by art.Name
+order by totalSales desc
+limit 5
+
+-- โจทย์5: จงแสดงรายชื่อพนักงานตำแหน่ง 'Sales Support Agent' พร้อมระบุว่าแต่ละคนมียอดรวมการขาย (Total Revenue) เท่าไหร่ และดูแลลูกค้า (Customer Count) กี่ราย
+select 
+  e.FirstName || ' ' ||  e.LastName  EmployeeName,
+  count(distinct c.CustomerId) CountCustomer,
+  sum(i.Total) TotalRevenue
+from employees e
+join customers c on c.SupportRepId = e.EmployeeId
+join invoices i on i.CustomerId = c.CustomerId
+where e.Title = 'Sales Support Agent'
+group by EmployeeName
+order by TotalRevenue desc
+
+-- โจทย์6: "จงหาว่า ประเทศใดบ้าง ที่มียอดขายเพลงแนว 'Rock' รวมกันแล้ว มากกว่า 50 รายการ (Quantity)"
+select  i.BillingCountry Country, sum(ii.Quantity) TotalSales
+from invoices i
+join invoice_items ii on ii.InvoiceId = i.InvoiceId
+join tracks t on t.TrackId = ii.TrackId
+join genres g on g.GenreId = t.GenreId
+where g.Name = 'Rock'
+group by Country
+having TotalSales > 50
+order by TotalSales DESC
