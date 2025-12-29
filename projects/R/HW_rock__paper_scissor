@@ -1,4 +1,4 @@
-## Home work pao ying chub
+## Home work pao ying chub in R 
 hands <- c("rock", "paper", "scissor")
 
 play <- function() {
