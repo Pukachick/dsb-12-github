@@ -1,0 +1,27 @@
+## Home work pao ying chub
+hands <- c("rock", "paper", "scissor")
+
+play <- function() {
+  x <- TRUE
+  while(x){
+    input <- tolower(readline("Your input :"))       ## change from readline() to getpass() because google colab won't work
+    bot_result <- sample(hands,1)
+    if (input %in% hands) {
+      print(paste("Bot :", bot_result))
+      if (input == bot_result){
+        print("Draw!")
+      } else if (input == "rock" && bot_result == "scissor" |
+                 input == "paper" && bot_result == "rock" |
+                 input == "scissor" && bot_result == "paper"){
+        print("Player Win!")
+        x <- FALSE
+      } else {
+        print("Player lose!")
+      }
+    } else {
+      print("please input again")
+    }
+  }
+}
+
+play()
