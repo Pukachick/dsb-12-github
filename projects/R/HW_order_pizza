@@ -1,0 +1,51 @@
+
+## 2. pizza restaurant
+
+##print(paste0("We have " menus, order))
+## bot: there are 3 pizza menus
+## user: order pizza
+## bot summarize total order + cost
+
+order_pizza <- function() {
+  # variable
+  total_price <- 0
+  orders <- c()
+  # menu
+  menu <- c(
+    hawaiian = 100,
+    seafood = 120,
+    pepperoni = 110,
+    coke = 20
+  )
+  
+  ## bot: greeting
+  print("Hi!")
+  u_name <- readline("What's your name? ")
+  # show menu
+  print(paste0("We have"))
+  print(menu)
+ 
+  
+  # take order
+  while(TRUE){
+    input <- tolower(readline("What can I get for you today? ")) 
+    if (tolower(input) == "done") {
+      break
+    }else if(input %in% names(menu)){
+      total_price <- total_price+ as.numeric(menu[input])
+      orders <- paste(orders, input)
+    }else{
+      print("Sorry We don't have that.")
+    }
+    
+  }
+
+  # show result
+  print("---------")
+  print(paste0("Customer Name: ", u_name))
+  print(paste0("Food List: ",orders))  
+  print(paste0("Total Price: ", total_price))
+  print("---------")
+  
+  
+}
